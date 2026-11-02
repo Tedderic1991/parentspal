@@ -2,7 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const skipped = new Set([
-  ".git", ".next", "node_modules", "coverage",
+  ".git", ".next", "out", "node_modules", "coverage",
   "playwright-report", "test-results", ".temp", ".branches",
 ]);
 const textExtensions = new Set([

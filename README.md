@@ -17,6 +17,40 @@ npm run dev
 Open http://localhost:3000. No API keys are needed in the default `demo` mode.
 For production: `npm run build` then `npm start`.
 
+## GitHub Pages demo
+
+The same application has two independent build modes:
+
+| Command | Output | Hosting |
+| --- | --- | --- |
+| `npm run build` | `.next/` | Normal Next.js server; run `npm start` |
+| `npm run build:pages` | `out/` | Static demo for GitHub Pages; no Next.js server |
+
+The Pages build runs in a temporary source snapshot and removes it afterward,
+so it does not overwrite `.next/`, local environment files, or server types.
+It always uses fictional demo data and never queries Supabase, even when the
+normal server is configured for Supabase. The regular build retains
+request-time catalog reads and image optimization.
+
+```sh
+npm run build:pages
+npm run preview:pages
+```
+
+Open http://127.0.0.1:3101/parentspal/. The default asset prefix is
+`/parentspal`. Set `PAGES_BASE_PATH` for both build and preview if hosting
+under another repository path, or set it to an empty string for a root/custom
+domain site. `npm start` serves only the normal server build, not `out/`.
+
+After merging, the repository owner must select **Settings → Pages → Build
+and deployment → Source → GitHub Actions** (the existing site uses
+branch-based publishing). `.github/workflows/pages.yml` publishes `out/` on
+pushes to `main` or manual dispatch from `main`, using the Pages-provided
+base path. PR builds validate the export but do not deploy it.
+No merge or repository settings change is performed by this refactor.
+
+## Demo limitations
+
 Purchases, payments, accounts, bookings, and QR codes are **simulated**.
 Personal details and passes exist only in memory and disappear on refresh.
 The receipt is a snapshot: changing a new bundle does not change an existing
@@ -104,12 +138,18 @@ and real purchases are **not** activated just by adding keys.
 ```sh
 npm run check           # ESLint, TypeScript, unit tests, 500-line limit
 npm run build
+npm run build:pages
 npx playwright install chromium
 npm run test:e2e        # starts its own demo server on port 3100
+npm run test:e2e:pages  # serves the export on port 3101 under /parentspal/
 ```
+
+Set `PARENTSPAL_E2E_SERVER=production` when running `npm run test:e2e` to test
+the existing normal production build instead of the development server.
 
 Unit tests exercise the actual migration and seed SQL on embedded PostgreSQL
 (PGlite), including public visibility, owner isolation, denied writes, and
 database constraints. They do not require Docker or Supabase credentials.
 
-CI runs source checks, the production build, and desktop/mobile browser tests.
+CI runs source checks, both builds, and desktop/mobile browser tests for both
+the regular application and the prefixed static export.

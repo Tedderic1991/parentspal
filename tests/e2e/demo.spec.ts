@@ -14,9 +14,12 @@ async function buyPass(page: Page) {
   await page.getByRole("button", { name: /Complete purchase/ }).click();
 }
 
-test.beforeEach(async ({ page }) => { await page.goto("/"); });
+test.beforeEach(async ({ page }) => { await page.goto("./"); });
 
 test("explores venue details, translates the UI, and stays within the viewport", async ({ page }) => {
+  const hero = page.getByRole("img", { name: "Discover fun spots" });
+  await expect(hero).toBeVisible();
+  await expect.poll(() => hero.evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   await page.getByRole("button", { name: /Sprout & Play/ }).click();
   await expect(page.getByRole("heading", { name: "Sprout & Play" })).toBeVisible();
   await expect(page.getByText("$18.00", { exact: true })).toBeVisible();
@@ -26,6 +29,21 @@ test("explores venue details, translates the UI, and stays within the viewport",
   await expect(page.getByRole("heading", { name: "Qui vient jouer ?" })).toBeVisible();
   await expect(page.getByLabel("Âge de l’enfant 1")).toHaveValue("2");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+test("loads all application assets from its deployment path without browser errors", async ({ page }) => {
+  const errors: string[] = [];
+  const failedAssets: string[] = [];
+  page.on("pageerror", error => errors.push(error.message));
+  page.on("requestfailed", request => failedAssets.push(request.url()));
+  page.on("response", response => {
+    if (response.status() >= 400) failedAssets.push(response.url());
+  });
+  await page.reload();
+  await page.getByRole("button", { name: "Build a pass →" }).click();
+  await expect(page.getByRole("heading", { name: "Who's going to play?" })).toBeVisible();
+  expect(errors).toEqual([]);
+  expect(failedAssets).toEqual([]);
 });
 
 test("guards the minimum and preserves form input while switching payment methods", async ({ page }) => {

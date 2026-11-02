@@ -32,7 +32,7 @@ export function Explore({ venues, onBuild, onDetail }: {
         <p className="text-sm text-muted">{t("Build your own bundle or purchase a gift.")}</p>
       </div>
       <div className="relative min-h-60 overflow-hidden rounded-2xl">
-        <Image src="/images/playground.jpg" alt={t("Discover fun spots")} fill priority
+        <Image src={`${process.env.PARENTSPAL_BASE_PATH}/images/playground.jpg`} alt={t("Discover fun spots")} fill priority
           sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
       </div>
     </section>

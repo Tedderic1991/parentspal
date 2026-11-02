@@ -22,8 +22,12 @@ jobs:
       - run: npm run build
         env:
           PARENTSPAL_DATA_MODE: demo
+      - run: npm run build:pages
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+        env:
+          PARENTSPAL_E2E_SERVER: production
+      - run: npm run test:e2e:pages
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

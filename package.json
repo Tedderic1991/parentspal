@@ -7,11 +7,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:pages": "node scripts/build-pages.mjs",
+    "preview:pages": "node scripts/serve-pages.mjs",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:pages": "playwright test --config playwright.pages.config.ts",
     "check:lines": "node scripts/check-file-lines.mjs",
     "check": "npm run lint && npm run typecheck && npm test && npm run check:lines"
   },
