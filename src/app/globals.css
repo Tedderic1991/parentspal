@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #17365f;
+  --color-muted: #61758e;
+  --color-accent: #ff405f;
+  --color-line: #dce5f2;
+  --color-surface: #ffffff;
+  --color-wash: #edf4ff;
+  --font-sans: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply m-0 text-ink antialiased;
+    background: linear-gradient(180deg, #eaf7ff 0%, #f7fbff 30%, #f5f9fc 100%);
+    min-height: 100vh;
+  }
+  button, a, input, select {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-600;
+  }
+  button { @apply cursor-pointer disabled:cursor-not-allowed disabled:opacity-45; }
+  h1 { @apply text-3xl font-bold tracking-tight sm:text-4xl; }
+  h2 { @apply text-2xl font-bold tracking-tight; }
+  h3 { @apply text-lg font-bold; }
+}
