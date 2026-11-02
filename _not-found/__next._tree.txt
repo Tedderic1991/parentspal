@@ -1,0 +1,4 @@
+:HL["/parentspal/_next/static/css/194ee977a498b42b.css","style"]
+2:[["children",{"s":"__PAGE__","h":160}]]
+1:[["children",{"s":"_not-found","h":96,"c":"$Q2"}]]
+0:{"b":"jjLRuX7vgMjRkbeLRZzip","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

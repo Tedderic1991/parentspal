@@ -1,0 +1,26 @@
+1:"$Sreact.fragment"
+2:I[3083,[],""]
+3:"static/chunks/app/error-344be52eb3f2c061.js"
+4:I[4587,["39","$3"],"default"]
+5:I[8231,[],""]
+9:"static/chunks/542-fdd03f8d5a04abc5.js"
+a:"static/chunks/app/page-982bff66ab804ff4.js"
+b:I[5290,["542","$9","974","$a"],"ParentsPal"]
+c:I[1170,[],"OutletBoundary"]
+d:"$Sreact.suspense"
+10:"ViewportBoundary"
+11:I[1170,[],"$10"]
+12:"MetadataBoundary"
+13:I[1170,[],"$12"]
+:HL["/parentspal/_next/static/css/194ee977a498b42b.css","style"]
+7:X
+8:[["children",{"s":"__PAGE__","h":160,"d":{"r":["$","$1","c",{"children":[["$","$Lb",null,{"venues":[{"id":"sprout","name":"Sprout & Play","area":"Brossard","priceCents":1800,"icon":"🌱","minAge":1,"maxAge":5,"description":"A cozy sensory play space for little explorers.","window":"Weekdays, 9am–2pm","surchargeCents":400,"walkIn":true},{"id":"jump","name":"Jump Junction","area":"Saint-Hubert","priceCents":2200,"icon":"🛝","minAge":2,"maxAge":8,"description":"Big slides, climbing and energetic indoor fun.","window":"Weekdays, 10am–3pm","surchargeCents":500,"walkIn":false},{"id":"cloud","name":"Cloud Castle","area":"Brossard","priceCents":2000,"icon":"☁️","minAge":1,"maxAge":7,"description":"Soft-play castle and imaginative pretend zones.","window":"Mon–Thu, 9am–4pm","surchargeCents":300,"walkIn":true},{"id":"mini","name":"Mini Makers Club","area":"Longueuil","priceCents":1600,"icon":"🎨","minAge":2,"maxAge":6,"description":"Creative play, building corners and mini workshops.","window":"Tue–Fri, 9am–1pm","surchargeCents":300,"walkIn":false},{"id":"ninja","name":"Little Ninja Loft","area":"La Prairie","priceCents":2400,"icon":"🥷","minAge":3,"maxAge":10,"description":"A mini obstacle course for brave little movers.","window":"Weekdays, 11am–3pm","surchargeCents":600,"walkIn":false}],"dataMode":"demo"}],null,["$","$Lc",null,{"children":["$","$d",null,{"name":"Next.MetadataOutlet","children":"$@e"}]}]]}],"p":"$@f","v":null,"s":"$7"}}]]
+0:{"t":{"t":{"s":"","h":80,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/parentspal/_next/static/css/194ee977a498b42b.css","precedence":"next"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$4","errorStyles":[],"errorScripts":null,"template":["$","$L5",null,{}],"notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]]}]}]}]]}],"p":"$@6","v":null,"s":"$7"},"c":"$Q8"},"h":{"r":["$","$1","h",{"children":[null,["$","$L11",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]}],["$","$L13",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$d",null,{"name":"Next.Metadata","children":[["$","title","0",{"children":"ParentsPal | Playground Pass"}],["$","meta","1",{"name":"description","content":"Discover play spots and build a family playground pass. Interactive demo."}]]}]}],null]}],null]}],"p":"$@14","v":null,"s":"$7"}},"a":"$@15","u":"$@16","b":"jjLRuX7vgMjRkbeLRZzip"}
+e:null
+7:300
+16:true
+7:C
+15:0
+6:"$undefined"
+14:"$undefined"
+f:"$undefined"
