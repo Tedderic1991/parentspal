@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useReducer, useRef, useState } from "react";
-import type { DataMode, Venue } from "@/shared/types";
-import { LanguageProvider, useLanguage } from "./i18n/LanguageProvider";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { screenPaths, type PageRoute } from "@/shared/routes";
+import { useLanguage } from "./i18n/LanguageProvider";
+import { useDemo } from "./DemoProvider";
 import { SiteShell } from "./components/SiteShell";
+import { Button, Heading, Panel } from "./components/ui";
 import { Explore, VenueDetails } from "./features/venues/Explore";
 import { FamilyForm } from "./features/pass-builder/FamilyForm";
 import { BundleSelection } from "./features/pass-builder/BundleSelection";
@@ -12,14 +15,11 @@ import { Checkout } from "./features/checkout/Checkout";
 import { DemoAccount, MyPass, PurchaseConfirmation } from "./features/passes/PassViews";
 import { VisitPlanner } from "./features/visits/VisitPlanner";
 import { VisitConfirmation } from "./features/visits/VisitConfirmation";
-import { createDemoPass, demoReducer, initialState, type Screen } from "./features/pass-builder/state";
+import { createDemoPass, type DemoAction } from "./features/pass-builder/state";
 
-export function ParentsPal(props: { venues: Venue[]; dataMode: DataMode }) {
-  return <LanguageProvider><DemoApp {...props} /></LanguageProvider>;
-}
-
-function DemoApp({ venues, dataMode }: { venues: Venue[]; dataMode: DataMode }) {
-  const [state, dispatch] = useReducer(demoReducer, venues, initialState);
+export function ParentsPal({ route }: { route: PageRoute }) {
+  const { state, dispatch, venues, dataMode } = useDemo();
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const { t } = useLanguage();
   const firstRender = useRef(true);
@@ -28,22 +28,27 @@ function DemoApp({ venues, dataMode }: { venues: Venue[]; dataMode: DataMode }) 
     if (firstRender.current) { firstRender.current = false; return; }
     document.getElementById("content")?.focus();
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [state.screen]);
+  }, [route]);
 
-  function go(screen: Screen) {
+  function go(screen: keyof typeof screenPaths) {
     setError(null);
-    dispatch({ type: "navigate", screen });
+    router.push(screenPaths[screen]);
   }
-  function patch(value: Parameters<typeof demoReducer>[1] & { type: "patch" }) {
+  function patch(value: DemoAction & { type: "patch" }) {
     dispatch(value);
   }
-  const detail = venues.find(venue => venue.id === state.detailId);
-  const visitVenue = venues.find(venue => venue.id === state.visit.venueId);
+  const detail = route.screen === "detail" ? venues.find(venue => venue.id === route.venueId) : undefined;
+  const confirmedVisit = state.confirmedVisit;
+  const visitVenue = venues.find(venue => venue.id === confirmedVisit?.venueId);
+
+  function showPass() {
+    return <MyPass pass={state.pass} venues={venues}
+      onExplore={() => go("home")} onBuild={() => go("family")} onPlan={() => go("booking")} />;
+  }
 
   function renderScreen() {
-    switch (state.screen) {
-      case "home": return <Explore venues={venues} onBuild={() => go("family")}
-        onDetail={id => patch({ type: "patch", value: { detailId: id, screen: "detail" } })} />;
+    switch (route.screen) {
+      case "home": return <Explore venues={venues} onBuild={() => go("family")} />;
       case "detail":
         if (!detail) throw new Error("Unknown venue.");
         return <VenueDetails venue={detail} onBack={() => go("home")} onBuild={() => go("family")} />;
@@ -62,33 +67,43 @@ function DemoApp({ venues, dataMode }: { venues: Venue[]; dataMode: DataMode }) 
           try {
             const pass = createDemoPass(state, venues, new Date(), `PP-DEMO-${crypto.randomUUID().slice(0, 8).toUpperCase()}`);
             dispatch({ type: "purchase", pass });
+            go("purchased");
           } catch (error) {
             if (!(error instanceof Error)) throw error;
             setError(error.message);
           }
         }} />;
-      case "passes": return <MyPass pass={state.pass} venues={venues}
-        onExplore={() => go("home")} onBuild={() => go("family")} onPlan={() => go("booking")} />;
+      case "passes": return showPass();
       case "account": return <DemoAccount name={state.name} email={state.email}
         onChange={value => patch({ type: "patch", value })} onDone={() => go("passes")} />;
       case "purchased":
-        if (!state.pass) throw new Error("No purchased pass.");
+        if (!state.pass) return showPass();
         return <PurchaseConfirmation pass={state.pass} venues={venues}
           onAccount={() => go("account")} onPass={() => go("passes")} />;
       case "booking":
-        if (!state.pass) throw new Error("No pass available to plan a visit.");
+        if (!state.pass) return showPass();
         return <VisitPlanner venues={venues} pass={state.pass} visit={state.visit}
           onChange={visit => patch({ type: "patch", value: { visit } })}
-          onBack={() => go("passes")} onConfirm={walkIn => go(walkIn ? "walkin" : "booked")} />;
+          onBack={() => go("passes")} onConfirm={walkIn => {
+            patch({ type: "patch", value: { confirmedVisit: { ...state.visit, walkIn } } });
+            go(walkIn ? "walkin" : "booked");
+          }} />;
       case "walkin":
       case "booked":
-        if (!state.pass || !visitVenue) throw new Error("No visit available to confirm.");
-        return <VisitConfirmation pass={state.pass} venue={visitVenue} visit={state.visit}
-          walkIn={state.screen === "walkin"} onPass={() => go("passes")} onExplore={() => go("home")} />;
+        if (!state.pass) return showPass();
+        if (!confirmedVisit || !visitVenue || confirmedVisit.walkIn !== (route.screen === "walkin")) {
+          return <Panel>
+            <Heading eyebrow="Visit planning" title="No confirmed visit"
+              description="Plan a demo visit before viewing its confirmation." />
+            <Button onClick={() => go("booking")}>{t("Plan a visit")}</Button>
+          </Panel>;
+        }
+        return <VisitConfirmation pass={state.pass} venue={visitVenue} visit={confirmedVisit}
+          walkIn={confirmedVisit.walkIn} onPass={() => go("passes")} onExplore={() => go("home")} />;
     }
   }
 
-  return <SiteShell dataMode={dataMode} onExplore={() => go("home")} onPass={() => go("passes")}>
+  return <SiteShell dataMode={dataMode}>
     {error && <p role="alert" className="mb-5 rounded-xl bg-red-50 p-4 text-red-800">{t(error)}</p>}
     {renderScreen()}
   </SiteShell>;

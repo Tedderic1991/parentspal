@@ -5,10 +5,10 @@ const basePath = githubPages ? (process.env.PAGES_BASE_PATH ?? "/parentspal") : 
 
 const config: NextConfig = {
   reactStrictMode: true,
+  trailingSlash: true,
   ...(githubPages ? {
     output: "export",
     basePath,
-    trailingSlash: true,
     images: { unoptimized: true },
   } : {}),
   env: {

@@ -1,21 +1,23 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import type { DataMode } from "@/shared/types";
+import { screenPaths } from "@/shared/routes";
 import { useLanguage } from "../i18n/LanguageProvider";
 
-export function SiteShell({ children, onExplore, onPass, dataMode }: {
-  children: ReactNode; onExplore: () => void; onPass: () => void; dataMode: DataMode;
+export function SiteShell({ children, dataMode }: {
+  children: ReactNode; dataMode: DataMode;
 }) {
   const { locale, toggleLanguage, t } = useLanguage();
   return <>
     <a href="#content" className="sr-only focus:not-sr-only">{t("Skip to content")}</a>
     <header className="sticky top-0 z-20 border-b border-line bg-white/85 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-        <button onClick={onExplore} aria-label="ParentsPal" className="text-2xl font-extrabold tracking-tight">
+        <Link href={screenPaths.home} aria-label="ParentsPal" className="text-2xl font-extrabold tracking-tight">
           Parents<span className="bg-gradient-to-r from-red-400 via-orange-400 to-purple-400 bg-clip-text text-transparent">Pal</span>
-        </button>
+        </Link>
         <nav aria-label="ParentsPal" className="flex items-center gap-2 text-xs sm:gap-4 sm:text-sm">
-          <button className="px-1 py-2 font-semibold" onClick={onExplore}>{t("Explore")}</button>
-          <button className="px-1 py-2 font-semibold" onClick={onPass}>{t("My pass")}</button>
+          <Link className="px-1 py-2 font-semibold" href={screenPaths.home}>{t("Explore")}</Link>
+          <Link className="px-1 py-2 font-semibold" href={screenPaths.passes}>{t("My pass")}</Link>
           <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-800">Demo</span>
           <button className="rounded-lg border border-line px-2 py-1 font-bold"
             onClick={toggleLanguage}

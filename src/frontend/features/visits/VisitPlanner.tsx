@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { DemoPass, Venue, Visit } from "@/shared/types";
-import { demoSlots, money, visitSurcharge } from "@/shared/pricing";
+import { money, visitSurcharge } from "@/shared/pricing";
+import { demoOptions } from "@/shared/options";
 import { venuePolicy } from "@/shared/catalog";
 import { Actions, Button, DetailLine, Field, Heading, Notice, Panel } from "../../components/ui";
 import { useLanguage } from "../../i18n/LanguageProvider";
@@ -49,12 +50,12 @@ export function VisitPlanner({ venues, pass, visit, onChange, onBack, onConfirm 
           {!venue.walkIn && <>
             <fieldset className="space-y-3">
               <legend className="mb-3 font-semibold">{t("Available demo time slots")}</legend>
-              {demoSlots.map(slot => <Button key={slot} variant="secondary"
-                aria-pressed={visit.slot === slot}
-                className={`flex w-full justify-between gap-3 ${visit.slot === slot ? "ring-2 ring-blue-500" : ""}`}
-                onClick={() => onChange({ ...visit, slot })}>
-                <span>{slot}</span>
-                <span>{t(slot === "4:00 PM" ? "Outside window" : "Pass window")}</span>
+              {demoOptions.visitSlots.map(slot => <Button key={slot.time} variant="secondary"
+                aria-pressed={visit.slot === slot.time}
+                className={`flex w-full justify-between gap-3 ${visit.slot === slot.time ? "ring-2 ring-blue-500" : ""}`}
+                onClick={() => onChange({ ...visit, slot: slot.time })}>
+                <span>{slot.time}</span>
+                <span>{t(slot.outsideWindow ? "Outside window" : "Pass window")}</span>
               </Button>)}
             </fieldset>
             <Notice good={!surcharge}>{surcharge

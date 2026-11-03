@@ -1,4 +1,5 @@
 import type { Quantities, Venue } from "@/shared/types";
+import { demoOptions } from "@/shared/options";
 import { calculateBundle, money } from "@/shared/pricing";
 import { venuePolicy } from "@/shared/catalog";
 import { Actions, Button, Heading, Notice, Panel, StepIndicator } from "../../components/ui";
@@ -13,7 +14,7 @@ export function BundleSelection({ venues, quantities, onQuantity, onBack, onNext
   return <>
     <StepIndicator step={1} />
     <Heading eyebrow="Build your own bundle" title="Choose your play stops"
-      description="Choose at least 3 admissions. Adjust quantities for each playground." />
+      description={`Choose at least ${demoOptions.bundle.minimumAdmissions} admissions. Adjust quantities for each playground.`} />
     <div className="grid gap-5 lg:grid-cols-[1.7fr_1fr] lg:items-start">
       <Panel>
         {venues.map(venue => <div key={venue.id} className="flex flex-wrap items-center gap-3 border-b border-line py-4">
@@ -33,10 +34,10 @@ export function BundleSelection({ venues, quantities, onQuantity, onBack, onNext
             </output>
             <Button variant="secondary" className="px-3 py-1"
               aria-label={`${t("Increase admissions for")} ${venue.name}`}
-              disabled={quantities[venue.id] >= 99} onClick={() => onQuantity(venue.id, 1)}>+</Button>
+              disabled={quantities[venue.id] >= demoOptions.bundle.maximumQuantity} onClick={() => onQuantity(venue.id, 1)}>+</Button>
           </div>
         </div>)}
-        <Notice>{t("Sample pricing: 10% off selected admissions. Booking and time-window policies vary by venue.")}</Notice>
+        <Notice>{t(`Sample pricing: ${demoOptions.bundle.discountPercent}% off selected admissions. Booking and time-window policies vary by venue.`)}</Notice>
         <Actions>
           <Button variant="secondary" onClick={onBack}>{t("Back")}</Button>
           <Button disabled={!calculateBundle(venues, quantities).meetsMinimum} onClick={onNext}>{t("Calculate my pass →")}</Button>

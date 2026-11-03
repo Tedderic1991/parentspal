@@ -15,6 +15,8 @@ const dictionary: Record<string, string> = {
   "Decrease admissions for": "Réduire les entrées pour",
   "Increase admissions for": "Ajouter des entrées pour",
   "Skip to content": "Aller au contenu",
+  "No confirmed visit": "Aucune visite confirmée",
+  "Plan a demo visit before viewing its confirmation.": "Planifiez une visite fictive avant de consulter sa confirmation.",
 };
 
 export function translate(value: string, locale: Locale): string {
@@ -29,5 +31,14 @@ export function translate(value: string, locale: Locale): string {
     .replace(/^(\d+) adults?$/, "$1 adultes")
     .replace(/^(\d+) children$/, "$1 enfants")
     .replace(/^(\d+) child$/, "$1 enfant")
+    .replace(/^Discount \((\d+)%\)$/, "Rabais ($1 %)")
+    .replace(/^Pick (\d+) or more admissions across venues\.$/, "Choisissez au moins $1 entrées parmi les lieux.")
+    .replace(/^Choose at least (\d+) admissions\.$/, "Choisissez au moins $1 entrées.")
+    .replace(/^Choose at least (\d+) admissions\. Adjust quantities for each playground\.$/,
+      "Choisissez au moins $1 entrées. Ajustez la quantité pour chaque lieu.")
+    .replace(/^Sample pricing: (\d+)% off selected admissions\. Booking and time-window policies vary by venue\.$/,
+      "Tarif de démonstration : $1 % de rabais sur les entrées choisies. Les conditions varient selon le lieu.")
+    .replace(/^Please enter an age from (\d+) to (\d+) for each child\.$/,
+      "Indiquez un âge de $1 à $2 ans pour chaque enfant.")
     .replace(/^Add (\d+) more admissions\.$/, "Ajoutez encore $1 entrées.");
 }

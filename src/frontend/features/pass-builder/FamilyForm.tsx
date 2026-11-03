@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Family } from "@/shared/types";
+import { demoOptions } from "@/shared/options";
 import { Actions, Button, Field, Heading, Panel, StepIndicator } from "../../components/ui";
 import { useLanguage } from "../../i18n/LanguageProvider";
 import { validateFamily } from "./state";
@@ -31,11 +32,12 @@ export function FamilyForm({ family, onChange, onBack, onNext }: {
               });
               setError(null);
             }}>
-            {Array.from({ length: 9 }, (_, number) => <option key={number}>{number}</option>)}
+            {demoOptions.family.groupCounts.map(number => <option key={number}>{number}</option>)}
           </select>
         </div>)}
         {family.childAges.map((age, index) => <Field key={index} id={`child-age-${index}`}
-          label={`Child ${index + 1} age`} type="number" min={0} max={17} step={1}
+          label={`Child ${index + 1} age`} type="number"
+          min={demoOptions.family.minimumChildAge} max={demoOptions.family.maximumChildAge} step={1}
           required value={age} placeholder="Age in years"
           onChange={event => {
             onChange({ ...family, childAges: family.childAges.map((current, i) => i === index ? event.target.value : current) });

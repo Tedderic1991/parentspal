@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Venue } from "@/shared/types";
+import { demoOptions } from "@/shared/options";
 import { venuePolicy } from "@/shared/catalog";
 import { money } from "@/shared/pricing";
 import { Actions, Button, DetailLine, Heading, Panel } from "../../components/ui";
@@ -13,8 +14,8 @@ const benefits = [
   ["◷", "No expiry date — go when it works for you", "bg-purple-500"],
 ];
 
-export function Explore({ venues, onBuild, onDetail }: {
-  venues: Venue[]; onBuild: () => void; onDetail: (id: string) => void;
+export function Explore({ venues, onBuild }: {
+  venues: Venue[]; onBuild: () => void;
 }) {
   const { t } = useLanguage();
   return <>
@@ -38,10 +39,10 @@ export function Explore({ venues, onBuild, onDetail }: {
     </section>
     <Heading eyebrow="Sample partner venues" title="Find your kind of play" description="Fictional demo data" />
     <div className="grid grid-cols-1 gap-4 min-[440px]:grid-cols-2 lg:grid-cols-3">
-      {venues.map(venue => <VenueCard key={venue.id} venue={venue} onSelect={() => onDetail(venue.id)} />)}
+      {venues.map(venue => <VenueCard key={venue.id} venue={venue} />)}
       <Panel className="flex flex-col justify-center gap-4">
         <h3>{t("Make your own bundle")}</h3>
-        <p className="text-sm text-muted">{t("Pick 3 or more admissions across venues.")}</p>
+        <p className="text-sm text-muted">{t(`Pick ${demoOptions.bundle.minimumAdmissions} or more admissions across venues.`)}</p>
         <Button onClick={onBuild}>{t("Explore pass")}</Button>
       </Panel>
     </div>

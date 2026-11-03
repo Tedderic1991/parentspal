@@ -1,4 +1,5 @@
-import { calculateBundle, money } from "@/shared/pricing";
+import { calculateBundle, MIN_ADMISSIONS, money } from "@/shared/pricing";
+import { demoOptions } from "@/shared/options";
 import type { Quantities, Venue } from "@/shared/types";
 import { DetailLine } from "../../components/ui";
 import { useLanguage } from "../../i18n/LanguageProvider";
@@ -10,8 +11,8 @@ export function BundleSummary({ venues, quantities }: { venues: Venue[]; quantit
     <p className="mb-2 text-xs font-bold uppercase tracking-widest">{t("Your bundle")}</p>
     <h2>{t(`${bundle.count} admissions`)}</h2>
     <DetailLine label="Regular subtotal">{money(bundle.subtotalCents, locale)}</DetailLine>
-    <DetailLine label="Discount (10%)">−{money(bundle.discountCents, locale)}</DetailLine>
+    <DetailLine label={`Discount (${demoOptions.bundle.discountPercent}%)`}>−{money(bundle.discountCents, locale)}</DetailLine>
     <DetailLine label="Pass total">{money(bundle.totalCents, locale)}</DetailLine>
-    <p className="mt-3 text-sm text-muted">{t(bundle.meetsMinimum ? "Minimum met." : `Add ${3 - bundle.count} more admissions.`)}</p>
+    <p className="mt-3 text-sm text-muted">{t(bundle.meetsMinimum ? "Minimum met." : `Add ${MIN_ADMISSIONS - bundle.count} more admissions.`)}</p>
   </aside>;
 }

@@ -1,0 +1,26 @@
+{
+  "currency": "CAD",
+  "bundle": {
+    "minimumAdmissions": 3,
+    "maximumQuantity": 99,
+    "discountPercent": 10,
+    "defaultVenueCount": 3,
+    "defaultQuantity": 1
+  },
+  "family": {
+    "groupCounts": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    "minimumChildAge": 0,
+    "maximumChildAge": 17,
+    "defaultAdults": 2,
+    "defaultChildAges": ["2"]
+  },
+  "paymentMethods": ["Apple Pay", "Google Pay", "Shop Pay", "Card"],
+  "defaultPaymentMethod": "Apple Pay",
+  "visitSlots": [
+    { "time": "9:00 AM", "outsideWindow": false },
+    { "time": "10:00 AM", "outsideWindow": false },
+    { "time": "12:00 PM", "outsideWindow": false },
+    { "time": "4:00 PM", "outsideWindow": true }
+  ],
+  "defaultVisitSlot": "10:00 AM"
+}

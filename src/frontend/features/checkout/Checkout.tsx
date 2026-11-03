@@ -1,4 +1,5 @@
 import type { Quantities, Venue } from "@/shared/types";
+import { demoOptions } from "@/shared/options";
 import { calculateBundle, money } from "@/shared/pricing";
 import { Actions, Button, Field, Heading, Notice, Panel, StepIndicator } from "../../components/ui";
 import { useLanguage } from "../../i18n/LanguageProvider";
@@ -19,7 +20,7 @@ export function Checkout({ venues, quantities, gift, email, name, payment, onCha
           <fieldset>
             <legend className="font-bold">{t("Payment method")}</legend>
             <div className="my-3 grid grid-cols-2 gap-3">
-              {["Apple Pay", "Google Pay", "Shop Pay", "Card"].map(method =>
+              {demoOptions.paymentMethods.map(method =>
                 <Button key={method} variant="secondary" aria-pressed={payment === method}
                   className={payment === method ? "ring-2 ring-blue-500" : ""}
                   onClick={() => onChange({ payment: method })}>

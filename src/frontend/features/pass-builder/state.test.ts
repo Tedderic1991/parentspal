@@ -39,4 +39,11 @@ describe("demo pass lifecycle", () => {
     expect(demoReducer(state, { type: "quantity", venueId: "sprout", delta: 200 }).quantities.sprout).toBe(99);
     expect(state.quantities.sprout).toBe(1);
   });
+  it("clears a previous visit confirmation when purchasing a new pass", () => {
+    const state = initialState(demoVenues);
+    state.email = "parent@example.com";
+    state.confirmedVisit = { venueId: "jump", date: "2026-11-07", slot: "10:00 AM", walkIn: false };
+    const pass = createDemoPass(state, demoVenues, new Date("2026-11-03T12:00:00Z"), "PP-DEMO-NEW");
+    expect(demoReducer(state, { type: "purchase", pass }).confirmedVisit).toBeNull();
+  });
 });

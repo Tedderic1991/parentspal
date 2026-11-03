@@ -49,6 +49,38 @@ pushes to `main` or manual dispatch from `main`, using the Pages-provided
 base path. PR builds validate the export but do not deploy it.
 No merge or repository settings change is performed by this refactor.
 
+## Page links and editable data
+
+Each screen has a real URL, including `/pass/family/`, `/pass/venues/`,
+`/pass/review/`, `/checkout/`, `/passes/`, `/account/`, and `/visits/plan/`.
+Venue names generate readable links such as `/venues/sprout-and-play/`.
+GitHub Pages adds the repository prefix, for example
+`/parentspal/venues/sprout-and-play/`. Direct links, refresh, and browser
+Back/Forward work without an SPA fallback server.
+
+The shared layout keeps your in-progress demo data while navigating.
+Refreshing or opening another tab starts a fresh demo; purchase and visit
+confirmation URLs do not store or recreate personal information. If their
+required state is missing, they offer a way to build a pass or plan a visit.
+
+Edit these files rather than JSX to change the demo's business data:
+
+| File | Contents |
+| --- | --- |
+| `src/shared/data/venues.json` | Venue IDs, names, descriptions, prices in cents, age ranges, and entry policies |
+| `src/shared/data/options.json` | Payment choices, time slots, family options/defaults, currency, and bundle rules |
+
+Keep venue IDs stable; names must produce unique URL slugs. Renaming a venue
+changes its URL. Rebuild and redeploy static exports after editing either
+file. UI translations remain under `src/frontend/i18n/`.
+
+The existing server catalog repository can replace JSON venue reads with
+Supabase records without changing the UI's `Venue` contract. Options remain
+local configuration until a settings API/database is implemented. The SQL
+seed is a separate database fixture; editing JSON does not update an existing
+database. Payment choices and time slots are still illustrative, not enabled
+payment providers or live availability.
+
 ## Demo limitations
 
 Purchases, payments, accounts, bookings, and QR codes are **simulated**.
@@ -69,7 +101,7 @@ pass. Sample time slots are illustrative, not real venue availability.
 | `supabase/` | Database migrations, fictional seed data, local configuration |
 | `tests/e2e/` | Desktop/mobile browser journeys |
 
-Frontend code never imports the backend. The server page loads a public venue
+Frontend code never imports the backend. The server layout loads a public venue
 catalog and passes serializable domain objects to the UI; credentials stay on
 the server. Next.js runs both layers in one deployment, but their code and
 responsibilities are separated. There is no separate backend service to deploy.

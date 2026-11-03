@@ -20,7 +20,8 @@ test("explores venue details, translates the UI, and stays within the viewport",
   const hero = page.getByRole("img", { name: "Discover fun spots" });
   await expect(hero).toBeVisible();
   await expect.poll(() => hero.evaluate(image => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
-  await page.getByRole("button", { name: /Sprout & Play/ }).click();
+  await page.getByRole("link", { name: /Sprout & Play/ }).click();
+  await expect(page).toHaveURL(/\/venues\/sprout-and-play\/$/);
   await expect(page.getByRole("heading", { name: "Sprout & Play" })).toBeVisible();
   await expect(page.getByText("$18.00", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Passer en français" }).click();
@@ -35,7 +36,12 @@ test("loads all application assets from its deployment path without browser erro
   const errors: string[] = [];
   const failedAssets: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
-  page.on("requestfailed", request => failedAssets.push(request.url()));
+  page.on("requestfailed", request => {
+    // Next.js cancels speculative route reads when navigating or reloading.
+    const canceledRouteRead = request.failure()?.errorText === "net::ERR_ABORTED"
+      && (request.method() === "HEAD" || request.headers().rsc === "1");
+    if (!canceledRouteRead) failedAssets.push(request.url());
+  });
   page.on("response", response => {
     if (response.status() >= 400) failedAssets.push(response.url());
   });
@@ -82,13 +88,13 @@ test("buys a demo pass and exercises reservation and walk-in paths", async ({ pa
 
 test("keeps an existing pass unchanged when building a new bundle and clears it on refresh", async ({ page }) => {
   await buyPass(page);
-  await page.getByRole("button", { name: "Explore", exact: true }).click();
+  await page.getByRole("link", { name: "Explore", exact: true }).click();
   await selectBundle(page);
   await page.getByRole("button", { name: "Increase admissions for Jump Junction" }).click();
-  await page.getByRole("button", { name: "My pass", exact: true }).click();
+  await page.getByRole("link", { name: "My pass", exact: true }).click();
   await expect(page.getByText("$54.00", { exact: true })).toBeVisible();
   await page.reload();
-  await page.getByRole("button", { name: "My pass", exact: true }).click();
+  await page.getByRole("link", { name: "My pass", exact: true }).click();
   await expect(page.getByRole("heading", { name: "No pass yet" })).toBeVisible();
 });
 
@@ -106,4 +112,47 @@ test("preserves gift and demo account flows in French", async ({ page }) => {
   await expect(page.getByLabel("Courriel pour recevoir le pass")).toHaveValue("parent@example.com");
   await page.getByRole("button", { name: "Créer un compte démo" }).click();
   await expect(page.getByRole("heading", { name: "Mon pass" })).toBeVisible();
+});
+
+test("supports venue deep links, refresh, and browser history", async ({ page }) => {
+  await page.getByRole("link", { name: /Jump Junction/ }).click();
+  await expect(page).toHaveURL(/\/venues\/jump-junction\/$/);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Jump Junction" })).toBeVisible();
+  await page.getByRole("button", { name: "Build my pass" }).click();
+  await expect(page).toHaveURL(/\/pass\/family\/$/);
+  await page.getByLabel("Number of adults").selectOption("4");
+  await page.getByRole("button", { name: "Next: choose playgrounds →" }).click();
+  await expect(page).toHaveURL(/\/pass\/venues\/$/);
+  await page.goBack();
+  await expect(page.getByLabel("Number of adults")).toHaveValue("4");
+  await page.goForward();
+  await expect(page.getByRole("heading", { name: "Choose your play stops" })).toBeVisible();
+  await page.goto("venues/little-ninja-loft/");
+  await expect(page.getByRole("heading", { name: "Little Ninja Loft" })).toBeVisible();
+});
+
+test("opens each standalone screen directly and recovers from missing purchase state", async ({ page }) => {
+  for (const [path, heading] of [
+    ["pass/family/", "Who's going to play?"],
+    ["pass/venues/", "Choose your play stops"],
+    ["pass/review/", "More play, with savings."],
+    ["checkout/", "Almost ready for play"],
+    ["account/", "Keep your pass close"],
+    ["passes/", "No pass yet"],
+    ["purchase/confirmation/", "No pass yet"],
+    ["visits/plan/", "No pass yet"],
+    ["visits/confirmation/", "No pass yet"],
+    ["visits/walk-in/", "No pass yet"],
+  ]) {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { name: heading, exact: true })).toBeVisible();
+  }
+  await page.getByRole("button", { name: "Build a pass →" }).click();
+  await expect(page).toHaveURL(/\/pass\/family\/$/);
+});
+
+test("returns a not-found response for unknown venues", async ({ page }) => {
+  const response = await page.goto("venues/does-not-exist/");
+  expect(response?.status()).toBe(404);
 });

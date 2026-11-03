@@ -4,8 +4,9 @@ import config from "./playwright.config";
 const basePath = process.env.PAGES_BASE_PATH ?? "/parentspal";
 const baseURL = `http://127.0.0.1:3101${basePath}/`;
 
-export default defineConfig(config, {
-  use: { baseURL },
+export default defineConfig({
+  ...config,
+  use: { ...config.use, baseURL },
   webServer: {
     command: "npm run preview:pages",
     url: baseURL,
